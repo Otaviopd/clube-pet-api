@@ -7,7 +7,18 @@ dotenv.config();
 const app = express();
 const prisma = new PrismaClient();
 
-app.use(cors());
+const allowed = [
+  'https://otaviopd.github.io',         // domínio base do GitHub Pages
+  // depois do primeiro deploy, adicione também seu domínio do Render:
+  // 'https://SEU-SERVICO.onrender.com'
+];
+
+app.use(cors({
+  origin: (origin, cb) => {
+    if (!origin || allowed.some(a => origin.startsWith(a))) return cb(null, true);
+    cb(new Error('Not allowed by CORS'));
+  }
+}));
 app.use(express.json());
 
 // Healthcheck
