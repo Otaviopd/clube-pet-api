@@ -21,7 +21,10 @@ app.use(cors({
 app.use(express.json());
 
 // Healthcheck
-app.get('/health', (_req, res) => res.json({ ok: true }));
+app.get('/health', (_req, res) => {
+  console.log('🏥 Health check accessed');
+  res.json({ ok: true });
+});
 
 // CRUD de Clientes
 
@@ -80,8 +83,10 @@ app.delete('/clientes/:id', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
-  console.log(`API rodando em http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`📍 Health check: /health`);
+  console.log(`👥 Clients API: /clientes`);
 });
 
 /*
