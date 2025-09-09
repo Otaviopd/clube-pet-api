@@ -1,0 +1,162 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/* ===== Enums ===== */
+enum Tamanho {
+  PEQUENO
+  MEDIO
+  GRANDE
+  GIGANTE
+}
+
+enum Temperamento {
+  DOCIL
+  BRINCALHAO
+  TIMIDO
+  AGITADO
+  AGRESSIVO
+  CALMO
+}
+
+enum StatusHospedagem {
+  ATIVO
+  CHECKOUT
+}
+
+enum StatusCreche {
+  AGENDADO
+  FINALIZADO
+}
+
+enum StatusCobranca {
+  PENDENTE
+  PAGO
+}
+
+/* ===== Modelos ===== */
+
+model Cliente {
+  id            Int            @id @default(autoincrement())
+  nome          String
+  email         String?        @unique
+  telefone      String
+  cpf           String?        @unique
+  endereco      String?
+  emergencia    String?
+  dataCadastro  DateTime       @default(now())
+
+  pets          Pet[]
+  mensagens     Mensagem[]
+  avaliacoes    Avaliacao[]
+  cobrancas     Inadimplencia[]
+}
+
+model Pet {
+  id                 Int            @id @default(autoincrement())
+  clienteId          Int
+  cliente            Cliente        @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+
+  nome               String
+  especie            String
+  raca               String
+  tamanho            Tamanho
+  peso               Float?
+  idade              String?
+  temperamento       Temperamento
+  castrado           String?
+  medicamentos       String?
+  cartaoVacinaNumero String
+  observacoes        String?
+  dataCadastro       DateTime       @default(now())
+
+  hospedagens        Hospedagem[]
+  creches            Creche[]
+  mensagens          Mensagem[]
+  avaliacoes         Avaliacao[]
+}
+
+model Hospedagem {
+  id              Int              @id @default(autoincrement())
+  petId           Int
+  pet             Pet              @relation(fields: [petId], references: [id], onDelete: Cascade)
+
+  clienteNome     String
+  petNome         String
+  checkin         DateTime
+  checkout        DateTime
+  dias            Int
+  servicos        String?
+  subtotal        Float
+  descontoPercent Float            @default(0)
+  total           Float
+  plano           String
+  status          StatusHospedagem @default(ATIVO)
+  dataCriacao     DateTime         @default(now())
+}
+
+model Creche {
+  id              Int           @id @default(autoincrement())
+  petId           Int
+  pet             Pet           @relation(fields: [petId], references: [id], onDelete: Cascade)
+
+  clienteNome     String
+  petNome         String
+  data            DateTime
+  periodo         String         // "Meio período" ou "Integral"
+  plano           String
+  entrada         String?
+  saida           String?
+  dias            Int
+  atividades      String?
+  subtotal        Float
+  descontoPercent Float          @default(0)
+  total           Float
+  status          StatusCreche   @default(AGENDADO)
+  dataCriacao     DateTime       @default(now())
+}
+
+model Mensagem {
+  id          Int       @id @default(autoincrement())
+  clienteId   Int
+  cliente     Cliente   @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  petId       Int?
+  pet         Pet?      @relation(fields: [petId], references: [id])
+
+  tipo        String     // Check-in | Check-out | Lembrete | Satisfação
+  mensagem    String
+  status      String     // Enviada | Falhou, etc.
+  dataHora    DateTime   @default(now())
+}
+
+model Avaliacao {
+  id          Int       @id @default(autoincrement())
+  clienteId   Int
+  cliente     Cliente   @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  petId       Int
+  pet         Pet       @relation(fields: [petId], references: [id], onDelete: Cascade)
+
+  servico     String    // Hospedagem | Creche
+  nota        Int
+  comentario  String?
+  data        DateTime  @default(now())
+}
+
+model Inadimplencia {
+  id            Int            @id @default(autoincrement())
+  clienteId     Int
+  cliente       Cliente        @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+
+  valor         Float
+  vencimento    DateTime
+  diasAtraso    Int
+  descricao     String
+  status        StatusCobranca @default(PENDENTE)
+  dataCriacao   DateTime       @default(now())
+  dataPagamento DateTime?
+}
