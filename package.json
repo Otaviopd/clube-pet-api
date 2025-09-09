@@ -6,10 +6,10 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon src/server.js",
-    "start": "prisma migrate deploy && node src/server.js",
+    "start": "npx prisma generate && npx prisma migrate deploy && node src/server.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate deploy",
-    "postinstall": "prisma generate"
+    "postinstall": "npx prisma generate"
   },
   "keywords": ["clubepet", "pet", "hotel", "api", "express", "prisma"],
   "author": "",
