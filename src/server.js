@@ -9,8 +9,7 @@ const prisma = new PrismaClient();
 
 const allowed = [
   'https://otaviopd.github.io',         // domínio base do GitHub Pages
-  // depois do primeiro deploy, adicione também seu domínio do Render:
-  // 'https://SEU-SERVICO.onrender.com'
+  'https://test-servico.onrender.com'   // domínio da API no Render
 ];
 
 app.use(cors({
