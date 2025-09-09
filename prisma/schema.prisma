@@ -7,7 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-/* ===== Enums ===== */
+// ===== Enums =====
 enum Tamanho {
   PEQUENO
   MEDIO
@@ -39,7 +39,7 @@ enum StatusCobranca {
   PAGO
 }
 
-/* ===== Modelos ===== */
+// ===== Modelos =====
 
 model Cliente {
   id            Int            @id @default(autoincrement())
