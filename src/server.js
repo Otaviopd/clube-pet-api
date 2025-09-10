@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
 
 const allowed = [
   'https://otaviopd.github.io',         // domínio base do GitHub Pages
-  'https://test-servico.onrender.com'   // domínio da API no Render
+  'https://clube-pet-api-1.onrender.com' // domínio da API no Render
 ];
 
 app.use(cors({
