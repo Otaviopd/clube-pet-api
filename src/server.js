@@ -31,12 +31,17 @@ app.get('/health', (_req, res) => {
 // GET /clientes - Listar todos os clientes com pets
 app.get('/clientes', async (_req, res) => {
   try {
+    console.log('👥 Accessing /clientes endpoint');
+    console.log('🔗 DATABASE_URL configured:', !!process.env.DATABASE_URL);
     const data = await prisma.cliente.findMany({
       include: { pets: true }
     });
+    console.log('✅ Query successful, found', data.length, 'clients');
     res.json(data);
   } catch (e) {
-    res.status(500).json({ error: 'Erro ao listar clientes' });
+    console.error('❌ Database error:', e.message);
+    console.error('❌ Error code:', e.code);
+    res.status(500).json({ error: 'Erro ao listar clientes', details: e.message });
   }
 });
 
