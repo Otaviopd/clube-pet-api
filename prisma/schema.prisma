@@ -76,6 +76,7 @@ model Pet {
   creches            Creche[]
   mensagens          Mensagem[]
   avaliacoes         Avaliacao[]
+  imagens            PetImagem[]
 }
 
 model Hospedagem {
@@ -156,4 +157,68 @@ model Inadimplencia {
   status        StatusCobranca @default(PENDENTE)
   dataCriacao   DateTime       @default(now())
   dataPagamento DateTime?
+}
+
+model ConfiguracaoComunicacao {
+  id              Int      @id @default(autoincrement())
+  whatsappToken   String?
+  whatsappNumero  String?
+  smsApiKey       String?
+  msgCheckin      String?
+  msgCheckout     String?
+  msgLembrete     String?
+  msgSatisfacao   String?
+  dataAtualizacao DateTime @default(now()) @updatedAt
+}
+
+model PetImagem {
+  id        Int      @id @default(autoincrement())
+  petId     Int
+  pet       Pet      @relation(fields: [petId], references: [id], onDelete: Cascade)
+  
+  nome      String
+  src       String   @db.Text // Base64 da imagem
+  tipo      String?  // "galeria" ou "cartao_vacina"
+  timestamp DateTime @default(now())
+}
+
+model PlanoCustomizado {
+  id              Int      @id @default(autoincrement())
+  nome            String
+  meses           Int
+  diasMes         Int
+  descontoPercent Float
+  aplica          String   // "hospedagem", "creche", "ambos"
+  ativo           Boolean  @default(true)
+  dataCriacao     DateTime @default(now())
+}
+
+model Configuracao {
+  id                        Int      @id @default(autoincrement())
+  // Preços Hospedagem
+  precoHospedagemPequeno    Float    @default(80)
+  precoHospedagemMedio      Float    @default(100)
+  precoHospedagemGrande     Float    @default(120)
+  precoHospedagemGigante    Float    @default(150)
+  
+  // Preços Creche Meio Período
+  precoCrecheMeioPequeno    Float    @default(40)
+  precoCrecheMeioMedio      Float    @default(50)
+  precoCrecheMeioGrande     Float    @default(60)
+  precoCrecheMeioGigante    Float    @default(70)
+  
+  // Preços Creche Integral
+  precoCrecheIntegralPequeno Float   @default(65)
+  precoCrecheIntegralMedio   Float   @default(80)
+  precoCrecheIntegralGrande  Float   @default(95)
+  precoCrecheIntegralGigante Float   @default(110)
+  
+  // Preços Extras
+  precoBanho                Float    @default(30)
+  precoConsulta             Float    @default(80)
+  precoTransporte           Float    @default(20)
+  precoAdaptacao            Float    @default(15)
+  precoTreinamento          Float    @default(25)
+  
+  dataAtualizacao           DateTime @default(now()) @updatedAt
 }
