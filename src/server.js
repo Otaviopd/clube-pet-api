@@ -7,25 +7,12 @@ dotenv.config();
 const app = express();
 const prisma = new PrismaClient();
 
-const allowed = [
-  'https://otaviopd.github.io',         // domínio base do GitHub Pages
-  'https://clube-pet-api-1.onrender.com', // domínio da API no Render
-  'http://localhost:3000',              // desenvolvimento local
-  'http://127.0.0.1:5500',             // Live Server
-  'file://'                             // arquivos locais
-];
-
+// CORS totalmente aberto para debug
 app.use(cors({
-  origin: (origin, cb) => {
-    console.log('🌐 CORS request from origin:', origin);
-    if (!origin || allowed.some(a => origin?.startsWith(a))) {
-      console.log('✅ CORS allowed');
-      return cb(null, true);
-    }
-    console.log('❌ CORS blocked for origin:', origin);
-    cb(new Error('Not allowed by CORS'));
-  },
-  credentials: true
+  origin: true,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
 
